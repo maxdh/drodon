@@ -77,10 +77,20 @@
         (do
           (def object-locations (assoc object-locations object 'body))
           `(you are now carrying the ~object))
-        :else '(you cannot get that.)))
+        :else '(you cannot get that!)))
 
 (def-action pickup [object] 
   `(clean-print (pickup-object '~object)))
+
+(defn discard-object [object]
+  (cond (have? object)
+        (do
+          (def object-locations (assoc object-locations object location))
+          '(you dropped the ~object))
+        :else '(you do not have that item!)))
+
+(def-action discard [object]
+  '(clean-print (discard-object '~object)))
 
 ;; filter all objects, returning only the ones at 'body'
 ;; is x at body in object-locations?
@@ -90,3 +100,7 @@
 ;;look at clojure docs example, returns true if object is in inventory
 (defn have? [object]
   (some #(= object %) (inventory)))
+
+
+;; TODO
+;; Add max. inventory size?
