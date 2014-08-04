@@ -82,16 +82,6 @@
 (def-action pickup [object] 
   `(clean-print (pickup-object '~object)))
 
-(defn discard-object [object]
-  (cond (have? object)
-        (do
-          (def object-locations (assoc object-locations object location))
-          '(you dropped the ~object))
-        :else '(you do not have that item!)))
-
-(def-action discard [object]
-  '(clean-print (discard-object '~object)))
-
 ;; filter all objects, returning only the ones at 'body'
 ;; is x at body in object-locations?
 (defn inventory []
@@ -101,6 +91,15 @@
 (defn have? [object]
   (some #(= object %) (inventory)))
 
+(defn discard-object [object]
+  (cond (have? object)
+        (do
+          (def object-locations (assoc object-locations object location))
+          `(you dropped the ~object))
+        :else '(you cannot get that!)))
+
+(def-action discard [object]
+  `(clean-print (discard-object '~object)))
 
 ;; TODO
 ;; Add max. inventory size?
