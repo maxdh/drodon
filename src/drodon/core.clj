@@ -106,8 +106,8 @@
 (def bucket-filled false)
 
 (def-action game-action [command subj obj place & args]
-  `(defspel ~command [subject# object#]
-     `(spel-print (cond (and (= location '~'~place)
+  `(def-action ~command [subject# object#]
+     `(clean-print (cond (and (= location '~'~place)
                              (= '~subject# '~'~subj)
                              (= '~object# '~'~obj)
                              (have? '~'~subj))
