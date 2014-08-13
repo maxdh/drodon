@@ -101,5 +101,42 @@
 (def-action discard [object]
   `(clean-print (discard-object '~object)))
 
+(def chain-welded false)
+
+(def bucket-filled false)
+
+(def-action game-action [command subj obj place & args]
+  `(def-action ~command [subject# object#]
+     `(clean-print (cond (and (= location '~'~place)
+                             (= '~subject# '~'~subj)
+                             (= '~object# '~'~obj)
+                             (have? '~'~subj))
+                        ~@'~args
+                        :else '(i cannot ~'~command like that -)))))
+
+(game-action weld chain bucket attic
+   (cond (and (have? 'bucket) (def chain-welded true))
+              '(the chain is now securely welded to the bucket -)
+         :else '(you do not have a bucket -)))
+
+(game-action dunk bucket well garden
+             (cond chain-welded 
+                   (do (def bucket-filled true)
+                       '(the bucket is now full of water))
+                   :else '(the water level is too low to reach -)))
+
+(game-action splash bucket wizard living-room
+             (cond (not bucket-filled) '(the bucket has nothing in it -)
+                   (have? 'frog) '(the wizard awakens and sees that you stole
+                                       his frog -
+                                       he is so upset he banishes you to the
+                                       netherworlds - you lose! the end -)
+                   :else '(the wizard awakens from his slumber and greets you
+                               warmly -
+                               he hands you the magic low-carb donut - you win!
+                               the end -)))
+
+
 ;; TODO
 ;; Add max. inventory size?
+;; Add help fn to list available actions
